@@ -20,7 +20,7 @@ import makeWASocket, { useMultiFileAuthState, wrapSocket, AntiBan } from '@xrell
 
 - **ES Modules Support:** Menggunakan standar `import`/`export` modern (`"type": "module"`).
 - **Advanced Anti-Ban System (`antiban.js`):** Integrasi sistem pelindung sesi dari `baron-baileys-v2` (Rate Limiter, Message Queue, Content Variator, Presence Choreographer, dan Session Health Monitor).
-- **Rich Menu Helper (`richMenu`):** Dukungan helper pengiriman menu interaktif dengan header, disclaimer, gambar, dan section berbasis GenAI.
+- **Rich Menu Helper (`richMenu`):** Dukungan helper pengiriman menu interaktif dengan header, disclaimer, gambar, tombol interaktif, dan section berbasis GenAI.
 - **Optimized Performance:** Fix memory leak & CPU (mutex + offline batching + WeakMap cache).
 - **Protokol WA Terbaru:** LID mapping, TC Tokens, App State sync, Newsletter v2, dan Album message.
 
@@ -30,7 +30,7 @@ import makeWASocket, { useMultiFileAuthState, wrapSocket, AntiBan } from '@xrell
 - `sendPoll`, `sendQuiz`, `sendLocation`, `sendPtv`
 - `richMenu`, `statusMention`
 
-## Contoh Penggunaan dengan Anti-Ban
+## Contoh Penggunaan Rich Menu Interaktif & Anti-Ban
 
 ```javascript
 import makeWASocket, { useMultiFileAuthState, wrapSocket } from '@xrelly-stack/bails';
@@ -53,23 +53,44 @@ async function startSock() {
         if (connection === 'open') {
             console.log('Connected with AntiBan protection active!');
             
-            // Kirim pesan teks dengan aman
-            await protectedSock.sendText('628xxx@s.whatsapp.net', 'Halo dari Bails v2.3.0!');
-
-            // Kirim Rich Menu interaktif
+            // Kirim Rich Menu Interaktif dengan Tombol
             await protectedSock.richMenu('628xxx@s.whatsapp.net', {
                 header: {
-                    title: 'Menu Utama Bot',
+                    title: '🤖 Menu Bot Interaktif',
                     disclaimer: true,
-                    disclaimerText: 'Sistem Otomatis'
+                    disclaimerText: 'Layanan Otomatis WhatsApp Bot',
+                    image: {
+                        url: 'https://example.com/banner.jpg',
+                        mime_type: 'image/jpeg',
+                        width: 800,
+                        height: 400
+                    }
                 },
                 body: {
-                    text: 'Silakan pilih opsi menu di bawah:'
+                    text: 'Silakan pilih salah satu opsi tombol interaktif di bawah ini:'
                 },
                 footer: {
                     text: 'Powered by Xrelly-stack'
-                }
+                },
+                nativeFlowButtons: [
+                    {
+                        name: 'quick_reply',
+                        buttonParamsJson: JSON.stringify({
+                            display_text: '📌 Cek Status',
+                            id: 'status_menu'
+                        })
+                    },
+                    {
+                        name: 'cta_url',
+                        buttonParamsJson: JSON.stringify({
+                            display_text: '🌐 Kunjungi Website',
+                            url: 'https://github.com/Xrelly-stack/bails'
+                        })
+                    }
+                ]
             });
+            
+            console.log('Interactive RichMenu sent successfully!');
         }
     });
 }
