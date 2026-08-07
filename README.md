@@ -1,29 +1,28 @@
 # @xrelly-stack/bails
 
-WhatsApp Modified By Lotus Seiren — Complete xrl API.
+WhatsApp Modified By Lotus Seiren — Complete xrl API, updated with the latest methods and structure from `@vansnowi/baileys`.
 
 ## Install
 
 ```json
 "dependencies": {
-  "@xrelly-stack/bails": "^2.0.0"
+  "@xrelly-stack/bails": "^2.3.0"
 }
 ```
 
 ## Import
 
 ```javascript
-const { default: makeWASocket, DisconnectReason } = require('@xrelly-stack/bails');
+import makeWASocket, { DisconnectReason, useMultiFileAuthState } from '@xrelly-stack/bails';
 ```
 
-## Fitur
+## Fitur & Pembaruan Terbaru
 
-- Fix memory leak & CPU — mutex + offline batching + WeakMap cache
-- Anti-banned error 463 (Reachout Timelock)
-- Protokol WA terbaru: LID mapping, TC Tokens, App State sync
-- Newsletter v2, Album message, `@all` mention (`mentionAll: true`)
-- **jimp auto-include**
-- CommonJS — kompatibel `require()`
+- Diperbarui menggunakan metode dan struktur dari `@vansnowi/baileys` (dukungan penuh ES Modules, `libsignal` versi standar, serta perbaikan protokol WhatsApp terbaru).
+- Fix memory leak & CPU — mutex + offline batching + WeakMap cache.
+- Anti-banned error 463 (Reachout Timelock).
+- Protokol WA terbaru: LID mapping, TC Tokens, App State sync.
+- Newsletter v2, Album message, `@all` mention (`mentionAll: true`).
 
 ### Shortcut Helpers
 
@@ -38,23 +37,17 @@ const { default: makeWASocket, DisconnectReason } = require('@xrelly-stack/bails
 - `groupStatus`, `groupLabel`
 - `interactiveMessage`
 
-## Contoh
+## Contoh Penggunaan
 
 ```javascript
-await sock.sendText(jid, 'Hello');
-await sock.sendImage(jid, { url: './foto.jpg' }, 'caption');
+import makeWASocket, { useMultiFileAuthState } from '@xrelly-stack/bails';
 
-await sock.sendMessage(jid, {
-  albumMessage: [
-    { image: buffer1, caption: 'foto 1' },
-    { image: { url: 'https://...' }, caption: 'foto 2' }
-  ]
-});
+const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
+const sock = makeWASocket({ auth: state });
 
-await sock.sendMessage(jid, {
-  text: 'Halo semua!',
-  mentionAll: true
-});
+sock.ev.on('creds.update', saveCreds);
+
+await sock.sendText('628xxx@s.whatsapp.net', 'Hello from updated Bails!');
 ```
 
 ## Requirements

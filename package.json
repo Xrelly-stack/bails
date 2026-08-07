@@ -1,7 +1,7 @@
 {
   "name": "@xrelly-stack/bails",
-  "version": "2.2.9",
-  "description": "Modified Bailyez, Connection Botz\u2014 Complete xrl API (Lotus + wbails engine)",
+  "version": "2.3.0",
+  "description": "Modified Bailyez, Connection Botz— Complete xrl API (Lotus + wbails engine) updated with latest @vansnowi/baileys methods",
   "keywords": [
     "whatsapp-xrl",
     "xrelly-bailyez",
@@ -17,7 +17,7 @@
   "license": "MIT",
   "author": "Orang Biasa",
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+
   "files": [
     "lib/**/*",
     "WAProto/**/*",
