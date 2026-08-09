@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync } from 'fs';
-import { fileURLToPath } from 'url';
+import { join } from 'path';
+import table from './WAProto.json' with { type: 'json' };
 import Long from 'long';
 const MAXV = 0x1fffffffffffff;
 const isLongIn = v => v && typeof v === 'object' && 'low' in v && 'high' in v;
@@ -363,12 +364,11 @@ const KIND = [{
   k: 'varint',
   s: 'zigzaglong'
 }];
+function requireTable(tablePath) {
+  return readFileSync(tablePath, 'utf8');
+}
 function makeProto(tablePath) {
-  const {
-    m,
-    t,
-    e
-  } = JSON.parse(readFileSync(tablePath, 'utf8'));
+  const { m, t, e } = typeof tablePath === 'string' ? JSON.parse(requireTable(tablePath)) : tablePath;
   const TABLE = {};
   for (const [full, fields] of Object.entries(t)) {
     const order = fields.map(([name, id, tc, flags = 0, enumName]) => {
@@ -532,16 +532,15 @@ export async function generateTable(protoPath, outPath) {
     enums: Object.keys(enums).length
   };
 }
-if (process.argv[1] && (process.argv[1] === fileURLToPath(import.meta.url) || process.argv.includes('--generate'))) {
-  const protoPath = fileURLToPath(new URL('./WAProto.proto', import.meta.url));
-  const outPath = fileURLToPath(new URL('./WAProto.json', import.meta.url));
+if (process.argv.includes('--generate')) {
+  const protoPath = join(process.cwd(), 'WAProto', 'WAProto.proto');
+  const outPath = join(process.cwd(), 'WAProto', 'WAProto.json');
   generateTable(protoPath, outPath).catch(err => {
     console.error(err);
     process.exit(1);
   });
 }
-const tablePath = fileURLToPath(new URL('./WAProto.json', import.meta.url));
-const built = makeProto(tablePath);
+const built = makeProto(table);
 export const proto = built.proto;
 export const codec = built.codec;
 export default {

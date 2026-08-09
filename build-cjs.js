@@ -5,7 +5,15 @@ import fs from 'fs';
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
 const dependencies = Object.keys(pkg.dependencies || {});
 const peerDependencies = Object.keys(pkg.peerDependencies || {});
-const allExternal = [...dependencies, ...peerDependencies, ...builtinModules, 'pino', 'jimp', 'sharp'];
+const bundleDependencies = new Set(['whatsapp-rust-bridge', 'whatsapp-rust-bridge-baron']);
+const allExternal = [
+  ...dependencies.filter(name => !bundleDependencies.has(name)),
+  ...peerDependencies,
+  ...builtinModules,
+  'pino',
+  'jimp',
+  'sharp'
+];
 
 async function runBuild() {
   console.log('Building bundled CommonJS output...');
