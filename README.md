@@ -135,7 +135,9 @@ Jangan menggunakan `require('@xrelly-stack/bails')` langsung sebagai fungsi tanp
 - `sendPoll`, `sendQuiz`, `sendLocation`, `sendPtv`
 - `richMenu`, `statusMention`
 
-## Contoh Penggunaan Rich Menu Interaktif & Anti-Ban
+## Contoh Penggunaan Rich Menu Carousel & Anti-Ban
+
+Contoh berikut menggunakan format `carousel` dengan beberapa kartu, tiga tombol pada setiap kartu, footer dengan URL dan gambar, serta `contextInfo` untuk pesan yang dikutip.
 
 ```javascript
 import makeWASocket, {
@@ -147,59 +149,85 @@ async function startSock() {
   const { state, saveCreds } = await useMultiFileAuthState('auth_info');
   const sock = makeWASocket({ auth: state });
 
-  const protectedSock = wrapSocket(sock, {
+  const snowi = wrapSocket(sock, {
     maxPerMinute: 10,
     minDelayMs: 1500,
     enableWarmUp: true
   });
 
-  protectedSock.ev.on('creds.update', saveCreds);
+  snowi.ev.on('creds.update', saveCreds);
 
-  protectedSock.ev.on('connection.update', async ({ connection }) => {
+  snowi.ev.on('connection.update', async ({ connection }) => {
     if (connection !== 'open') return;
 
-    console.log('Connected with AntiBan protection active!');
+    const from = '628xxx@s.whatsapp.net';
 
-    await protectedSock.richMenu('628xxx@s.whatsapp.net', {
+    await snowi.richMenu(from, {
       header: {
-        title: 'Menu Bot Interaktif',
         disclaimer: true,
-        disclaimerText: 'Layanan Otomatis WhatsApp Bot',
+        disclaimerText: 'x',
+        title: 'rich',
         image: {
-          url: 'https://example.com/banner.jpg',
-          mime_type: 'image/jpeg',
-          width: 800,
-          height: 400
+          url: 'https://example.com/image.jpg',
+          mime_type: 'image/jpeg'
+          /*
+          Inline rendering is only in white, so it is recommended
+          only for transparent logos.
+          inline: false,
+          width: 100,
+          height: 100
+          */
         }
       },
       body: {
-        text: 'Silakan pilih salah satu opsi tombol interaktif di bawah ini:'
+        carousel: true,
+        cards: [
+          {
+            title: 'Menu1',
+            buttons: [
+              'menu2',
+              'menu3',
+              'rich3'
+            ],
+            toast: 'jaja'
+          },
+          {
+            title: 'Menu2',
+            buttons: [
+              'test',
+              'me',
+              'rich2'
+            ],
+            toast: 'jaja'
+          }
+        ]
       },
       footer: {
-        text: 'Powered by Xrelly-stack'
-      },
-      nativeFlowButtons: [
-        {
-          name: 'quick_reply',
-          buttonParamsJson: JSON.stringify({
-            display_text: 'Cek Status',
-            id: 'status_menu'
-          })
-        },
-        {
-          name: 'cta_url',
-          buttonParamsJson: JSON.stringify({
-            display_text: 'Kunjungi Website',
-            url: 'https://github.com/Xrelly-stack/bails'
-          })
+        text: 'Telegram channel',
+        url: 'https://t.me/jspacker',
+        image: {
+          url: 'https://example.com/image.png',
+          height: 100,
+          width: 100
         }
-      ]
+      },
+      contextInfo: {
+        quotedMessage: {
+          stickerPackMessage: {
+            name: 'A. x'
+          }
+        },
+        remoteJid: 'status@broadcast',
+        participant: ''
+      }
     });
   });
 }
 
 startSock().catch(console.error);
 ```
+
+Properti `body.carousel` harus bernilai `true`, sedangkan setiap elemen `body.cards` memiliki `title`, array `buttons`, dan `toast`. Sesuaikan `from`, URL gambar, serta isi tombol dengan kebutuhan bot Anda.
 
 ## Troubleshooting CommonJS
 
