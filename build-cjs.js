@@ -1,17 +1,24 @@
 import { build } from 'esbuild';
-import { rmSync, mkdirSync } from 'fs';
+import { builtinModules } from 'module';
+import fs from 'fs';
+
+const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
+const dependencies = Object.keys(pkg.dependencies || {});
+const peerDependencies = Object.keys(pkg.peerDependencies || {});
+const allExternal = [...dependencies, ...peerDependencies, ...builtinModules, 'pino', 'jimp', 'sharp'];
 
 async function runBuild() {
-  console.log('Building CommonJS output...');
+  console.log('Building bundled CommonJS output...');
   
-  // Build lib/index.js to lib/index.cjs
   await build({
     entryPoints: ['lib/index.js'],
     outfile: 'lib/index.cjs',
-    bundle: false,
+    bundle: true,
     platform: 'node',
     format: 'cjs',
     target: 'node20',
+    external: allExternal,
+    logLevel: 'info',
   });
 
   console.log('CommonJS build completed successfully!');
