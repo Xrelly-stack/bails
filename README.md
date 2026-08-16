@@ -90,7 +90,7 @@ Perubahan ini memperbaiki error berikut pada saat pembuatan socket:
 TypeError: import_node_cache2.default is not a constructor
 ```
 
-Versi **2.3.9** juga memperbaiki integrasi `cache-manager`. Adapter internal menggunakan named export `createCache` dan menjembatani API store lama yang menggunakan `del` serta `keys`:
+Versi **2.3.11 atau lebih** juga memperbaiki integrasi `cache-manager`. Adapter internal menggunakan named export `createCache` dan menjembatani API store lama yang menggunakan `del` serta `keys`:
 
 ```javascript
 import { createCache } from 'cache-manager';
