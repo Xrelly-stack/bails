@@ -7,7 +7,7 @@ Modified Bailyez, Connection Botz — Complete xrl API, updated with latest meth
 Gunakan versi terbaru dari npm:
 
 ```bash
-npm install @xrelly-stack/bails@2.3.9
+npm install @xrelly-stack/bails@2.3.12
 ```
 
 Atau tambahkan dependency secara manual:
@@ -15,7 +15,7 @@ Atau tambahkan dependency secara manual:
 ```json
 {
   "dependencies": {
-    "@xrelly-stack/bails": "^2.3.9"
+    "@xrelly-stack/bails": "^2.3.12"
   }
 }
 ```
@@ -104,11 +104,11 @@ Dengan demikian, penggunaan `MakeCacheManagerStore` pada bundle CommonJS tidak l
 
 ## Migrasi dari Versi Sebelumnya
 
-Jika bot sebelumnya mengalami error `is not a constructor` atau error import `cache-manager`, perbarui paket ke versi 2.3.9 dan instal ulang dependency:
+Jika bot sebelumnya mengalami error `is not a constructor` atau error import `cache-manager`, perbarui paket ke versi 2.3.12 dan instal ulang dependency:
 
 ```bash
 npm uninstall @xrelly-stack/bails
-npm install @xrelly-stack/bails@2.3.9
+npm install @xrelly-stack/bails@2.3.12
 ```
 
 Pastikan kode CommonJS menggunakan pola berikut:
@@ -229,6 +229,65 @@ startSock().catch(console.error);
 
 Properti `body.carousel` harus bernilai `true`, sedangkan setiap elemen `body.cards` memiliki `title`, array `buttons`, dan `toast`. Sesuaikan `from`, URL gambar, serta isi tombol dengan kebutuhan bot Anda.
 
+## Product Message
+
+Versi terbaru mendukung pengiriman katalog produk melalui alias `productMessage` pada CommonJS. API ini menerima format flat yang lebih mudah digunakan, sementara format lama dengan properti `product` tetap dipertahankan untuk kompatibilitas.
+
+```javascript
+const product = {
+  productMessage: {
+    title: 'Produk Contoh',
+    description: 'Deskripsi produk',
+    thumbnail: {
+      url: 'https://example.com/product.jpg'
+    },
+    productId: 'PROD001',
+    retailerId: 'RETAIL001',
+    url: 'https://example.com/product/PROD001',
+    body: 'Detail produk dan informasi pembelian.',
+    footer: 'Harga spesial',
+    priceAmount1000: 50000,
+    currencyCode: 'IDR',
+    businessOwnerJid: '628123456789@s.whatsapp.net',
+    buttons: [
+      {
+        name: 'cta_url',
+        buttonParamsJson: JSON.stringify({
+          display_text: 'Beli Sekarang',
+          url: 'https://example.com/buy/PROD001'
+        })
+      }
+    ]
+  }
+};
+
+await sock.sendMessage('628123456789@s.whatsapp.net', product, {
+  quoted: message
+});
+```
+
+Properti `thumbnail` atau `product.productImage` harus berupa URL publik, buffer, atau sumber media yang didukung helper media. URL gambar sebaiknya menggunakan skema `https://` dan dapat diakses oleh proses bot. `priceAmount1000` mengikuti format WhatsApp dengan nilai harga dikalikan 1.000; untuk harga Rp50.000 gunakan `50000` jika implementasi Anda memang mengharapkan nilai nominal langsung, atau sesuaikan dengan format katalog Anda sebelum dikirim.
+
+Format kompatibel lama tetap dapat digunakan:
+
+```javascript
+await sock.sendMessage(jid, {
+  product: {
+    productId: 'PROD001',
+    title: 'Produk Contoh',
+    description: 'Deskripsi produk',
+    productImage: { url: 'https://example.com/product.jpg' },
+    priceAmount1000: 50000,
+    currencyCode: 'IDR'
+  },
+  businessOwnerJid: '628123456789@s.whatsapp.net',
+  body: 'Detail produk',
+  footer: 'Harga spesial'
+});
+```
+
+Jika gambar tidak diberikan, library akan menghentikan proses dengan error `productMessage.productImage or productMessage.thumbnail is required` daripada mengirim payload katalog yang tidak lengkap. Pengujian lokal memvalidasi pembentukan protobuf dan CommonJS bundle; penerimaan akhir tetap bergantung pada status katalog bisnis dan dukungan akun WhatsApp tujuan.
+
 ## Troubleshooting CommonJS
 
 Jika error lama masih muncul setelah instalasi, pastikan Node.js menggunakan versi paket yang benar:
@@ -238,7 +297,7 @@ npm list @xrelly-stack/bails
 npm view @xrelly-stack/bails version
 ```
 
-Output yang diharapkan adalah `2.3.9`. Jika versi masih lebih lama, hapus `node_modules` dan `package-lock.json`, lalu jalankan `npm install` kembali. Error `NodeCache is not a constructor` pada versi lama tidak dapat diperbaiki hanya dengan mengubah file bot; bundle paket perlu diperbarui.
+Output yang diharapkan adalah `2.3.12`. Jika versi masih lebih lama, hapus `node_modules` dan `package-lock.json`, lalu jalankan `npm install` kembali. Error `NodeCache is not a constructor` pada versi lama tidak dapat diperbaiki hanya dengan mengubah file bot; bundle paket perlu diperbarui.
 
 ## Requirements
 
