@@ -231,10 +231,10 @@ Properti `body.carousel` harus bernilai `true`, sedangkan setiap elemen `body.ca
 
 ## Product Message
 
-Versi terbaru mendukung pengiriman katalog produk melalui alias `productMessage` pada CommonJS. API ini menerima format flat yang lebih mudah digunakan, sementara format lama dengan properti `product` tetap dipertahankan untuk kompatibilitas.
+Versi terbaru mendukung pengiriman katalog produk melalui alias `productMessage` pada CommonJS. API ini menerima format flat yang lebih mudah digunakan.
 
 ```javascript
-const product = {
+await sock.sendMessage(jid, {
   productMessage: {
     title: 'Produk Contoh',
     description: 'Deskripsi produk',
@@ -244,7 +244,7 @@ const product = {
     productId: 'PROD001',
     retailerId: 'RETAIL001',
     url: 'https://example.com/product/PROD001',
-    body: 'Detail produk dan informasi pembelian.',
+    body: 'Detail produk',
     footer: 'Harga spesial',
     priceAmount1000: 50000,
     currencyCode: 'IDR',
@@ -259,34 +259,10 @@ const product = {
       }
     ]
   }
-};
-
-await sock.sendMessage('628123456789@s.whatsapp.net', product, {
-  quoted: message
-});
+}, { quoted: m });
 ```
 
 Properti `thumbnail` atau `product.productImage` harus berupa URL publik, buffer, atau sumber media yang didukung helper media. URL gambar sebaiknya menggunakan skema `https://` dan dapat diakses oleh proses bot. `priceAmount1000` mengikuti format WhatsApp dengan nilai harga dikalikan 1.000; untuk harga Rp50.000 gunakan `50000` jika implementasi Anda memang mengharapkan nilai nominal langsung, atau sesuaikan dengan format katalog Anda sebelum dikirim.
-
-Format kompatibel lama tetap dapat digunakan:
-
-```javascript
-await sock.sendMessage(jid, {
-  product: {
-    productId: 'PROD001',
-    title: 'Produk Contoh',
-    description: 'Deskripsi produk',
-    productImage: { url: 'https://example.com/product.jpg' },
-    priceAmount1000: 50000,
-    currencyCode: 'IDR'
-  },
-  businessOwnerJid: '628123456789@s.whatsapp.net',
-  body: 'Detail produk',
-  footer: 'Harga spesial'
-});
-```
-
-Jika gambar tidak diberikan, library akan menghentikan proses dengan error `productMessage.productImage or productMessage.thumbnail is required` daripada mengirim payload katalog yang tidak lengkap. Pengujian lokal memvalidasi pembentukan protobuf dan CommonJS bundle; penerimaan akhir tetap bergantung pada status katalog bisnis dan dukungan akun WhatsApp tujuan.
 
 ## Troubleshooting CommonJS
 
