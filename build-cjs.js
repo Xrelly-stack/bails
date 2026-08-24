@@ -26,6 +26,9 @@ async function runBuild() {
     format: 'cjs',
     target: 'node20',
     external: allExternal,
+    define: {
+      'import.meta.url': 'undefined'
+    },
     logLevel: 'info',
   });
 
