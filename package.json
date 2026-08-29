@@ -1,6 +1,6 @@
 {
   "name": "@xrelly-stack/bails",
-  "version": "2.3.15",
+  "version": "2.3.16",
   "description": "Modified Bailyez, Connection Botz— Complete xrl API (Lotus + wbails engine) updated with latest @vansnowi/baileys methods",
   "keywords": [
     "whatsapp-xrl",
@@ -77,9 +77,13 @@
   },
   "type": "module",
   "devDependencies": {
-    "esbuild": "^0.28.1"
+    "esbuild": "^0.28.1",
+    "long": "^5.3.2"
   },
   "bundledDependencies": [
+    "whatsapp-rust-bridge-baron"
+  ],
+  "bundleDependencies": [
     "whatsapp-rust-bridge-baron"
   ]
 }
