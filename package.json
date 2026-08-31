@@ -1,6 +1,6 @@
 {
   "name": "@xrelly-stack/bails",
-  "version": "2.3.18",
+  "version": "2.3.19",
   "description": "Modified Bailyez, Connection Botz\u2014 Complete xrl API (Lotus + wbails engine) updated with latest @vansnowi/baileys methods",
   "keywords": [
     "whatsapp-xrl",
